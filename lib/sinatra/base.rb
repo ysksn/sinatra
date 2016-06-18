@@ -150,16 +150,8 @@ module Sinatra
 
     def finish
       result = body
-
-      if drop_content_info?
-        headers.delete "Content-Length"
-        headers.delete "Content-Type"
-      end
-
-      if drop_body?
-        close
-        result = []
-      end
+      %w(Content-Length Content-Type).each(&:delete) if drop_content_info?
+      drop_body? && close && result = []
 
       if calculate_content_length?
         # if some other code has already set Content-Length, don't muck with it
