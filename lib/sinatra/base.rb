@@ -28,16 +28,11 @@ module Sinatra
     def accept
       @env['sinatra.accept'] ||= begin
         if @env.include? 'HTTP_ACCEPT' and @env['HTTP_ACCEPT'].to_s != ''
-          return(
-            @env['HTTP_ACCEPT']
-              .to_s
-              .scan(HEADER_VALUE_WITH_PARAMS)
-              .map! { |e| AcceptEntry.new(e) }
-              .sort
-          )
-        enr
-
-        [AcceptEntry.new('*/*')]
+          @env['HTTP_ACCEPT'].to_s.scan(HEADER_VALUE_WITH_PARAMS).
+            map! { |e| AcceptEntry.new(e) }.sort
+        else
+          [AcceptEntry.new('*/*')]
+        end
       end
     end
 
