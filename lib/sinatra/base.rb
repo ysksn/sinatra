@@ -150,7 +150,10 @@ module Sinatra
 
     def finish
       result = body
-      %w(Content-Length Content-Type).each(&:delete) if drop_content_info?
+      if drop_content_info?
+        %w(Content-Length Content-Type).each { |h| header.delete h }
+      end
+
       drop_body? && close && result = []
 
       if calculate_content_length?
